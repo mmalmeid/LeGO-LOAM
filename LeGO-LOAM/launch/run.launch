@@ -6,6 +6,14 @@
     <!--- Run Rviz-->
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lego_loam)/launch/test.rviz" />
 
+    <!-- Transform from base link to velodyne -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="lidar_tf_broadcaster" args="0 0 0 0 0.0 0 base_link velodyne" />
+
+    <!-- Node to transform lidar transform to base_link -->
+    <include file="$(find lego_loam)/launch/transform_cloud.launch"> 
+        <arg name="launch_rviz" value="false"/>
+    </include>
+
     <!--- TF -->
     <node pkg="tf" type="static_transform_publisher" name="camera_init_to_map"  args="0 0 0 1.570795   0        1.570795 /map    /camera_init 10" />
     <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0 0 0 -1.570795 -1.570795 0        /camera /base_link   10" />

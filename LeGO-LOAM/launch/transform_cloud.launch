@@ -1,0 +1,25 @@
+<launch>
+    <arg name="launch_rviz" default="true" />
+
+    <!--- Sim Time -->
+    <param name="/use_sim_time" value="true" />
+
+    <!--- Run Rviz-->
+    <group if="$(arg launch_rviz)">
+      <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lego_loam)/launch/transformed_pcl.rviz" />
+
+      <!-- Transform from base link to velodyne -->
+      <node pkg="tf2_ros" type="static_transform_publisher" name="lidar_tf_broadcaster" args="0 0 0 0 0.275 0 base_link velodyne" />
+    </group>
+
+    <node pkg="lego_loam" type="transformPclToBaseLink" name="transformPclToBaseLink" output="screen">
+        <!-- Input point cloud topic -->
+        <param name="/pointcloud_to_transform" value="/velodyne_points" />
+
+        <!-- Output point cloud frame_id -->
+        <param name="/frame_id" value="base_link" />
+
+        <!-- Output point cloud topic -->
+        <param name="/pointcloud_transformed" value="/velodyne_points_base_link" />
+    </node>
+</launch>
